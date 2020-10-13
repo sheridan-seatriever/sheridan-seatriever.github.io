@@ -19,7 +19,7 @@ const LineChart = ({labels, datasets, types=[]}) => {
           datasets,
         },
         options: {
-          responsive: false
+          responsive: true
         }
       });
     }    
