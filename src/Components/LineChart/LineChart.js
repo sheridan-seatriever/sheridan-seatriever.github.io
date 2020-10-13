@@ -11,6 +11,7 @@ const LineChart = ({labels, datasets, types=[]}) => {
       const data = styleChart(datasets);
       for(let i=0; i<data.length; i++) {
         data[i].type = types[i];
+        data[i].fill = false;
       }
       new Chart(chartref.current, {
         type: "line",
