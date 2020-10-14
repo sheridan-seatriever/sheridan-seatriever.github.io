@@ -24,10 +24,19 @@ const styleChart = data => {
     'rgba(255, 159, 64, 1)'
   ];
   for(let i=0; i<data.length; i++) {
-    data[i].backgroundColor = colorArray[i];
-    data[i].pointBackgroundColor = pointColors[i];
-    data[i].pointBorderColor = pointColors[i];
-    data[i].borderColor = lineColors[i];
+    if(data[i].target) {
+      data[i].type = 'line';
+      data[i].pointRadius = 0;
+      data[i].pointHitRadius = 0;
+      data[i].fill = false;
+      data[i].backgroundColor = colorArray[i];
+      data[i].borderColor = lineColors[i];
+    } else {
+      data[i].backgroundColor = colorArray[i];
+      data[i].pointBackgroundColor = pointColors[i];
+      data[i].pointBorderColor = pointColors[i];
+      data[i].borderColor = lineColors[i];
+    }
   }
   return data;
 }

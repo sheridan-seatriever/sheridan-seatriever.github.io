@@ -4,12 +4,28 @@ import styles from './LineChart.module.css';
 import styleChart from './styleChart';
 import {cloneDeep} from 'lodash';
 
-const LineChart = ({labels, datasets, types=[], dualYAxis, axis}) => {
+const LineChart = ({labels, datasets, types=[], dualYAxis, axis, target}) => {
   
   const chartref = useRef(null);
   let datasetsClone = cloneDeep(datasets);
-
   let options = {};
+
+
+  for(let i=0; i<datasetsClone.length; i++) {
+    datasetsClone[i].type = types[i] || 'line';
+    datasetsClone[i].fill = false;
+  }
+
+  if(target) {
+    datasetsClone.push({
+      target: true,
+      label: 'TARGET',
+      data: new Array(labels.length).fill(target),
+    });
+  }
+  
+  datasetsClone = styleChart(datasetsClone);
+
 
   if(dualYAxis) {
     options = {
@@ -32,13 +48,7 @@ const LineChart = ({labels, datasets, types=[], dualYAxis, axis}) => {
 
   useEffect(() => {
     if(chartref && chartref.current) {
-      datasetsClone = styleChart(datasetsClone);
-      for(let i=0; i<datasetsClone.length; i++) {
-        datasetsClone[i].type = types[i] || 'line';
-        datasetsClone[i].fill = false;
-      }
-      console.log('datasets: ', datasets);
-      console.log('datasetsClone: ', datasetsClone);
+      console.log(datasetsClone);
       new Chart(chartref.current, {
         type: "line",
         data: {
@@ -48,7 +58,7 @@ const LineChart = ({labels, datasets, types=[], dualYAxis, axis}) => {
         options
       });
     }    
-  }, [datasets])
+  }, [datasetsClone, chartref, labels, options])
 
   return (
     <canvas ref={chartref} className={styles.chart}/>

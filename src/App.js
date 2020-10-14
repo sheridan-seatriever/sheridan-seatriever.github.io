@@ -20,6 +20,7 @@ const App = () => {
             labels={labels}
             datasets={[fillRate[2020]]}
             type={['bar']}
+            target={96}
           />
           <LineChart
             labels={labels}
