@@ -31,6 +31,8 @@ const App = () => {
             labels={labels}
             datasets={[storeInventory[2020], weeklySales[2020], salesForecast[2020]]}
             types={['bar']}
+            dualYAxis={true}
+            axis={['A', 'B', 'B']}
           />
           <LineChart 
             labels={labels}
