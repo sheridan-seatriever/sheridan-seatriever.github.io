@@ -2,8 +2,9 @@ import React,{useState, useEffect, useRef} from 'react';
 import styles from './SearchDropdown.module.css';
 import {cloneDeep} from 'lodash';
 import useOutsideAlerter from './useOutsideAlerter';
+import nextId from 'react-id-generator';
 
-const SearchDropdown = ({data=[], input, setInput, placeholder='', selectCallback}) => {
+const SearchDropdown = ({data, input, setInput, placeholder='', selectCallback}) => {
   const [open, setOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [dropdown, setDropdown] = useState([]);
@@ -14,8 +15,12 @@ const SearchDropdown = ({data=[], input, setInput, placeholder='', selectCallbac
     setOpen(false);
   }
 
-  const wrapperRef = {useRef};
+  const wrapperRef = useRef(null);
   useOutsideAlerter(wrapperRef, onClose, open)
+
+  useEffect(() => {
+    setDataCopy(cloneDeep(data));
+  }, [data])
 
   useEffect(() => {
     if(data.length>0) {
@@ -28,9 +33,9 @@ const SearchDropdown = ({data=[], input, setInput, placeholder='', selectCallbac
     const mapData = dataCopy => {
       return dataCopy.map((item, index) => {
         if(index===selectedIndex) {
-          return <div className={styles.selected} onMouseOver={()=>handleMouseOver(index)} onClick={()=>handleClick(index)}>{item.name}</div>
+          return <div key={nextId()} className={styles.selected} onMouseEnter={()=>handleMouseEnter(index)} onClick={()=>handleClick(index)}>{item.name}</div>
         } else {
-          return <div className={styles.not_selected} onMouseOver={()=>handleMouseOver(index)} onClick={()=>handleClick(index)}>{item.name}</div>
+          return <div key={nextId()} className={styles.not_selected} onMouseEnter={()=>handleMouseEnter(index)} onClick={()=>handleClick(index)}>{item.name}</div>
         }
       });
     }
@@ -39,6 +44,7 @@ const SearchDropdown = ({data=[], input, setInput, placeholder='', selectCallbac
   }, [selectedIndex, dataCopy])
 
   const handleKeyPress = e => {
+    e.preventDefault();
     if(e.key==='ArrowDown') {
       if(selectedIndex+1>=dataCopy.length) {
         setSelectedIndex(0);
@@ -51,20 +57,28 @@ const SearchDropdown = ({data=[], input, setInput, placeholder='', selectCallbac
       } else {
         setSelectedIndex(selectedIndex-1);
       }
+    } else if(selectCallback) {
+      if(dataCopy[selectedIndex]&&dataCopy[selectedIndex].name) {
+        selectCallback(e, dataCopy[selectedIndex].name);
+        setOpen(false);
+      }
     } else if(e.key==='Enter') {
-      setOpen(false);
-      setInput(dataCopy[selectedIndex].name);
+      if(dataCopy[selectedIndex]&&dataCopy[selectedIndex].name) {
+        setInput(dataCopy[selectedIndex].name);
+        setOpen(false);
+      }
     }
   }
 
-  const handleMouseOver = index => {
+  const handleMouseEnter = index => {
+    console.log('mouseover')
     setSelectedIndex(index);
   }
 
   const handleClick = index => {
     setInput(dataCopy[index].name);
     if(selectCallback) {
-      selectCallback(dataCopy[index].name);
+      selectCallback(null, dataCopy[index].name);
     }
     setOpen(false);
   }
@@ -75,13 +89,13 @@ const SearchDropdown = ({data=[], input, setInput, placeholder='', selectCallbac
 
 
   const onChange = e => {
+    setOpen(true);
     setInput(e.target.value);
-
   }
 
   return (
-    <div ref={wrapperRef} className={styles.container} onFocus={onFocus} onKeyDown={handleKeyPress}>
-      <input className="input" value={input} onChange={e=>onChange(e)} placeholder={placeholder}/>
+    <div ref={wrapperRef} className={styles.container} onFocus={onFocus}>
+      <input value={input} onChange={e=>onChange(e)} placeholder={placeholder} onKeyDown={handleKeyPress}/>
       <div className={`${open?styles.dropdown:styles.closed}`}>
         {dropdown}
       </div>
