@@ -11,3 +11,17 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+.input {
+  color: #dbe0f1;
+  background-color: #000;
+  border: solid 2px #003c58;
+  padding: 10px;
+}
+.input:focus {
+  outline-width: 0;
+}
