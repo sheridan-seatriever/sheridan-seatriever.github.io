@@ -4,7 +4,27 @@ import styles from './LineChart.module.css';
 import styleChart from './styleChart';
 import {cloneDeep} from 'lodash';
 
-const LineChart = ({labels, datasets, types=[], dualYAxis, axis, target}) => {
+function useTraceUpdate(props) {
+  const prev = useRef(props);
+  useEffect(() => {
+    const changedProps = Object.entries(props).reduce((ps, [k, v]) => {
+      if (prev.current[k] !== v) {
+        ps[k] = [prev.current[k], v];
+      }
+      return ps;
+    }, {});
+    if (Object.keys(changedProps).length > 0) {
+      console.log('Changed props:', changedProps);
+    }
+    prev.current = props;
+  });
+}
+
+
+
+const LineChart = (props) => {
+  const {labels, datasets, types=[], dualYAxis, axis, target} = props;
+  useTraceUpdate(props);
   
   const chartref = useRef(null);
   let datasetsClone = cloneDeep(datasets);
@@ -48,7 +68,6 @@ const LineChart = ({labels, datasets, types=[], dualYAxis, axis, target}) => {
 
   useEffect(() => {
     if(chartref && chartref.current) {
-      console.log(datasetsClone);
       new Chart(chartref.current, {
         type: "line",
         data: {

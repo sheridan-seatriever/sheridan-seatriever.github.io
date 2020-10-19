@@ -44,7 +44,6 @@ const SearchDropdown = ({data, input, setInput, placeholder='', selectCallback})
   }, [selectedIndex, dataCopy])
 
   const handleKeyPress = e => {
-    e.preventDefault();
     if(e.key==='ArrowDown') {
       if(selectedIndex+1>=dataCopy.length) {
         setSelectedIndex(0);
@@ -63,6 +62,7 @@ const SearchDropdown = ({data, input, setInput, placeholder='', selectCallback})
         setOpen(false);
       }
     } else if(e.key==='Enter') {
+      e.preventDefault();
       if(dataCopy[selectedIndex]&&dataCopy[selectedIndex].name) {
         setInput(dataCopy[selectedIndex].name);
         setOpen(false);
@@ -71,7 +71,7 @@ const SearchDropdown = ({data, input, setInput, placeholder='', selectCallback})
   }
 
   const handleMouseEnter = index => {
-    console.log('mouseover')
+    ('mouseover')
     setSelectedIndex(index);
   }
 
