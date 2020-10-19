@@ -45,27 +45,31 @@ const SearchDropdown = ({data, input, setInput, placeholder='', selectCallback})
 
   const handleKeyPress = e => {
     if(e.key==='ArrowDown') {
+      e.preventDefault();
       if(selectedIndex+1>=dataCopy.length) {
         setSelectedIndex(0);
       } else {
         setSelectedIndex(selectedIndex+1);
       }
     } else if(e.key==='ArrowUp') {
+      e.preventDefault();
       if(selectedIndex-1<0) {
         setSelectedIndex(dataCopy.length-1);
       } else {
         setSelectedIndex(selectedIndex-1);
       }
-    } else if(selectCallback) {
-      if(dataCopy[selectedIndex]&&dataCopy[selectedIndex].name) {
-        selectCallback(e, dataCopy[selectedIndex].name);
-        setOpen(false);
-      }
     } else if(e.key==='Enter') {
       e.preventDefault();
-      if(dataCopy[selectedIndex]&&dataCopy[selectedIndex].name) {
-        setInput(dataCopy[selectedIndex].name);
-        setOpen(false);
+      if(selectCallback) {
+        if(dataCopy[selectedIndex]&&dataCopy[selectedIndex].name) {
+          selectCallback(e, dataCopy[selectedIndex].name);
+          setOpen(false);
+        }
+      } else {
+        if(dataCopy[selectedIndex]&&dataCopy[selectedIndex].name) {
+          setInput(dataCopy[selectedIndex].name);
+          setOpen(false);
+        }
       }
     }
   }
